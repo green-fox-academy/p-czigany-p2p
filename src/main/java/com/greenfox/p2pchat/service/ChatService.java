@@ -20,7 +20,7 @@ public class ChatService {
   public String index() {
     if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
       log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
-      log.setLogLevel(System.getenv("CHAT_APP_LOGLEVEL"));
+      log.setLogLevel("INFO");
       log.setMethod("GET");
       log.setPath("/");
       log.setRequestData("");
