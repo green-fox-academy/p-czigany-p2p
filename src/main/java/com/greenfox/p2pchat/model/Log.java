@@ -1,5 +1,6 @@
 package com.greenfox.p2pchat.model;
 
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ public class Log {
 
   private String path;
   private String method;
-  private ZonedDateTime dateAndTime;
+  private Timestamp dateAndTime;
   private String logLevel;
   private String requestData;
 
@@ -26,7 +27,7 @@ public class Log {
     return method;
   }
 
-  public ZonedDateTime getDateAndTime() {
+  public Timestamp getDateAndTime() {
     return dateAndTime;
   }
 
@@ -46,7 +47,7 @@ public class Log {
     this.method = method;
   }
 
-  public void setDateAndTime(ZonedDateTime dateAndTime) {
+  public void setDateAndTime(Timestamp dateAndTime) {
     this.dateAndTime = dateAndTime;
   }
 
