@@ -1,7 +1,9 @@
 package com.greenfox.p2pchat.controller;
 
+import com.greenfox.p2pchat.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Created by peter on 2017.05.17..
@@ -9,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class Main {
 
-  @RequestMapping("/")
+  @Autowired
+  ChatService chatService;
+
+  @GetMapping(value = {"/", "/index"})
   public String index() {
-    return "index";
+    return chatService.index();
   }
 }
