@@ -1,6 +1,8 @@
 package com.greenfox.p2pchat.service;
 
+import com.greenfox.p2pchat.dataaccess.RepoHandler;
 import com.greenfox.p2pchat.model.Log;
+import com.greenfox.p2pchat.model.User;
 import java.sql.Timestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Component;
 public class ChatService {
 
   @Autowired
-  Log log;
+  private Log log;
+
+  @Autowired
+  private RepoHandler repoHandler;
 
   public ChatService() {
   }
@@ -27,5 +32,10 @@ public class ChatService {
       System.out.println(log);
     }
     return "index";
+  }
+
+  public String newUser(User user) {
+    repoHandler.saveUser(user);
+    return "redirect:/";
   }
 }
