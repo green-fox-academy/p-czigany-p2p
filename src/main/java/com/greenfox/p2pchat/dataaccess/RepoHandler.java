@@ -13,14 +13,22 @@ public class RepoHandler {
   @Autowired
   private UserRepo userRepo;
 
+//  @Autowired
+//  private MessageRepo messageRepo;
+
   public RepoHandler() {
 
   }
 
-//  @Autowired
-//  private MessageRepo messageRepo;
-
   public void saveUser(User user) {
     userRepo.save(user);
+  }
+
+  public Iterable<User> allUsers() {
+    return userRepo.findAll();
+  }
+
+  public User getUserByName(String nameToFindBy) {
+    return userRepo.findByUsername(nameToFindBy);
   }
 }

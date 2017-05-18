@@ -66,8 +66,14 @@ public class ChatService {
         log.setRequestData("username=" + user.getUsername());
         System.out.println(log);
       }
-      repoHandler.saveUser(user);
-      return "redirect:/";
+      if (repoHandler.allUsers() == null) {
+        repoHandler.saveUser(user);
+        return "redirect:/";
+      } else if (repoHandler.getUserByName(user.getUsername()) != null) {
+        return "redirect:/";
+      } else {
+        return "redirect:/enter";
+      }
     }
   }
 }
