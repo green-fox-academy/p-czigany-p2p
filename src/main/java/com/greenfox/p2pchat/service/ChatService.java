@@ -49,7 +49,25 @@ public class ChatService {
   }
 
   public String newUser(User user) {
-    repoHandler.saveUser(user);
-    return "redirect:/";
+    if (user.getUsername().equals("")) {
+      log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+      log.setLogLevel("ERROR");
+      log.setMethod("SET");
+      log.setPath("/enterbutton");
+      log.setRequestData("error=Missing username.");
+      System.out.println(log);
+      return "enterError";
+    } else {
+      if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
+        log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+        log.setLogLevel("INFO");
+        log.setMethod("SET");
+        log.setPath("/enterbutton");
+        log.setRequestData("username=" + user.getUsername());
+        System.out.println(log);
+      }
+      repoHandler.saveUser(user);
+      return "redirect:/";
+    }
   }
 }
