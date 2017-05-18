@@ -13,6 +13,10 @@ public class RepoHandler {
   @Autowired
   private UserRepo userRepo;
 
+  public RepoHandler() {
+
+  }
+
 //  @Autowired
 //  private MessageRepo messageRepo;
 

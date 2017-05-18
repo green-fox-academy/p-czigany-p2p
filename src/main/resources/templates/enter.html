@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <title>Peer to Peer Chat App</title>
-  <meta charset="utf-8"/>
-</head>
-<body>
-<h1>Enter</h1>
-<form action="/enterbutton" th:object="${user}">
-  Username: <input type="text" th:field="*{username}" />
-  <input type="submit" value="Enter" />
-</form>
-</body>
+  <head>
+    <title>Peer to Peer Chat App</title>
+    <meta charset="utf-8"/>
+  </head>
+  <body>
+    <h1>Enter</h1>
+    <form action="/enterbutton" th:object="${user}" method="post">
+  Username:
+      <input type="text" th:field="*{username}" />
+      <input type="submit" value="Enter" />
+    </form>
+  </body>
 </html>

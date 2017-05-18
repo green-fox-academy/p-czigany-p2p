@@ -4,7 +4,9 @@ import com.greenfox.p2pchat.model.User;
 import com.greenfox.p2pchat.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * Created by peter on 2017.05.17..
@@ -21,12 +23,11 @@ public class Main {
   }
 
   @GetMapping(value = "/enter")
-  public String enter() {
-
-    return "enter";
+  public String enter(Model model) {
+    return chatService.enter(model);
   }
 
-  @GetMapping(value = "/enterbutton")
+  @PostMapping(value = "/enterbutton")
   public String enterbutton(User user) {
     return chatService.newUser(user);
   }

@@ -1,7 +1,6 @@
 package com.greenfox.p2pchat.model;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import org.springframework.stereotype.Component;
 
 /**

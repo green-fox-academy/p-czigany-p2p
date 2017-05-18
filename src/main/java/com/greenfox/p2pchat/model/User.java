@@ -4,11 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by peter on 2017.05.17..
  */
 @Entity
+@Table(name = "users")
 public class User {
 
   @Id
