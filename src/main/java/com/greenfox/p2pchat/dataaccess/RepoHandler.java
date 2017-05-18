@@ -37,6 +37,11 @@ public class RepoHandler {
     return userRepo.findOneByUsername(nameToFindBy);
   }
 
+  public void updateUsername(User userToUpdate, String newName) {
+    userRepo.findOneById(userToUpdate.getId()).setUsername(newName);
+    userRepo.save(userToUpdate);
+  }
+
   public void deleteUserById(long id) {
     userRepo.delete(id);
   }

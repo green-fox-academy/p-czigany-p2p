@@ -38,4 +38,9 @@ public class Main {
   public String enterbutton(User user) {
     return chatService.enterbutton(user);
   }
+
+  @PostMapping(value = "/updatebutton")
+  public String updatebutton(User user) {
+    return chatService.updatebutton(user);
+  }
 }

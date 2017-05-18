@@ -25,12 +25,12 @@ public class ChatService {
 
   public String index(Model model) {
 //    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
-      log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
-      log.setLogLevel("INFO");
-      log.setMethod("GET");
-      log.setPath("/");
-      log.setRequestData("");
-      System.out.println(log);
+    log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+    log.setLogLevel("INFO");
+    log.setMethod("GET");
+    log.setPath("/");
+    log.setRequestData("");
+    System.out.println(log);
 //    }
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
       model.addAttribute("user", repoHandler.firstUser());
@@ -42,12 +42,12 @@ public class ChatService {
 
   public String enter(Model model) {
 //    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
-      log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
-      log.setLogLevel("INFO");
-      log.setMethod("GET");
-      log.setPath("/enter");
-      log.setRequestData("");
-      System.out.println(log);
+    log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+    log.setLogLevel("INFO");
+    log.setMethod("GET");
+    log.setPath("/enter");
+    log.setRequestData("");
+    System.out.println(log);
 //    }
     model.addAttribute("user", new User());
     return "enter";
@@ -64,12 +64,12 @@ public class ChatService {
       return "enterError";
     } else {
 //      if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
-        log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
-        log.setLogLevel("INFO");
-        log.setMethod("SET");
-        log.setPath("/enterbutton");
-        log.setRequestData("username=" + user.getUsername());
-        System.out.println(log);
+      log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+      log.setLogLevel("INFO");
+      log.setMethod("SET");
+      log.setPath("/enterbutton");
+      log.setRequestData("username=" + user.getUsername());
+      System.out.println(log);
 //      }
       if (repoHandler.allUsers().size() == 0) {
         repoHandler.saveUser(user);
@@ -79,6 +79,29 @@ public class ChatService {
       } else {
         return "redirect:/enter";
       }
+    }
+  }
+
+  public String updatebutton(User user) {
+    if (user.getUsername().equals("")) {
+      log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+      log.setLogLevel("ERROR");
+      log.setMethod("SET");
+      log.setPath("/updatebutton");
+      log.setRequestData("error=Missing username.");
+      System.out.println(log);
+      return "indexError";
+    } else {
+//      if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
+      log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
+      log.setLogLevel("INFO");
+      log.setMethod("SET");
+      log.setPath("/updatebutton");
+      log.setRequestData("newname=" + user.getUsername());
+      System.out.println(log);
+//      }
+      repoHandler.updateUsername(repoHandler.firstUser(), user.getUsername());
+      return "redirect:/";
     }
   }
 
