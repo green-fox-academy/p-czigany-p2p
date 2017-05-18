@@ -1,6 +1,7 @@
 package com.greenfox.p2pchat.dataaccess;
 
 import com.greenfox.p2pchat.model.User;
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -8,7 +9,9 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface UserRepo extends CrudRepository<User, Long> {
 
-  Iterable<User> findAll();
+  List<User> findAll();
 
-  User findByUsername(String username);
+  User findOneByUsername(String username);
+
+  User findOneById(long id);
 }

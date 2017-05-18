@@ -1,6 +1,7 @@
 package com.greenfox.p2pchat.dataaccess;
 
 import com.greenfox.p2pchat.model.User;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +25,19 @@ public class RepoHandler {
     userRepo.save(user);
   }
 
-  public Iterable<User> allUsers() {
+  public List<User> allUsers() {
     return userRepo.findAll();
   }
 
-  public User getUserByName(String nameToFindBy) {
-    return userRepo.findByUsername(nameToFindBy);
+  public User firstUser() {
+    return userRepo.findAll().get(0);
+  }
+
+  public User userByName(String nameToFindBy) {
+    return userRepo.findOneByUsername(nameToFindBy);
+  }
+
+  public void deleteUserById(long id) {
+    userRepo.delete(id);
   }
 }

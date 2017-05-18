@@ -23,32 +23,37 @@ public class ChatService {
   public ChatService() {
   }
 
-  public String index() {
-    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
+  public String index(Model model) {
+//    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
       log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
       log.setLogLevel("INFO");
       log.setMethod("GET");
       log.setPath("/");
       log.setRequestData("");
       System.out.println(log);
+//    }
+    if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
+      model.addAttribute("user", repoHandler.firstUser());
+      return "index";
+    } else {
+      return "redirect:/enter";
     }
-    return "index";
   }
 
   public String enter(Model model) {
-    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
+//    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
       log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
       log.setLogLevel("INFO");
       log.setMethod("GET");
       log.setPath("/enter");
       log.setRequestData("");
       System.out.println(log);
-    }
+//    }
     model.addAttribute("user", new User());
     return "enter";
   }
 
-  public String newUser(User user) {
+  public String enterbutton(User user) {
     if (user.getUsername().equals("")) {
       log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
       log.setLogLevel("ERROR");
@@ -58,22 +63,26 @@ public class ChatService {
       System.out.println(log);
       return "enterError";
     } else {
-      if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
+//      if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
         log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
         log.setLogLevel("INFO");
         log.setMethod("SET");
         log.setPath("/enterbutton");
         log.setRequestData("username=" + user.getUsername());
         System.out.println(log);
-      }
-      if (repoHandler.allUsers() == null) {
+//      }
+      if (repoHandler.allUsers().size() == 0) {
         repoHandler.saveUser(user);
         return "redirect:/";
-      } else if (repoHandler.getUserByName(user.getUsername()) != null) {
+      } else if (repoHandler.userByName(user.getUsername()) != null) {
         return "redirect:/";
       } else {
         return "redirect:/enter";
       }
     }
+  }
+
+  public void deleteUserById(long id) {
+    repoHandler.deleteUserById(id);
   }
 }

@@ -9,6 +9,8 @@ public class P2pchatApplication {
 
 //  Environmental Variables:
   public static final String CHAT_APP_LOGLEVEL = "INFO";
+  public static final String CHAT_APP_UNIQUE_ID = "p-czigany";
+  public static final String CHAT_APP_PEER_ADDRESSS = "url of the next person's application";
 
 	public static void main(String[] args) {
 //	  Set Environmental Variables:
