@@ -34,7 +34,7 @@ public class ChatService {
     System.out.println(log);
 //    }
     model.addAttribute("newmessage", new Message());
-    model.addAttribute("models", repoHandler.allMessages());
+    model.addAttribute("messages", repoHandler.allMessages());
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
       model.addAttribute("user", repoHandler.firstUser());
       return "index";
