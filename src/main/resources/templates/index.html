@@ -17,5 +17,9 @@
     <ul th:each="message: ${messages}">
       <li th:utext="${message.username + '&lt;br /&gt;' + message.text}"/>
     </ul>
+    <form action="/sendbutton" th:object="${newmessage}" method="post">
+      <input type="text" th:field="*{text}" />
+      <input type="submit" value="Send" />
+    </form>
   </body>
 </html>

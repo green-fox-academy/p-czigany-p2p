@@ -52,7 +52,7 @@ public class RepoHandler {
   // Message functions:
 
   public List<Message> allMessages() {
-    return messageRepo.findAllOrderByTimestamp();
+    return messageRepo.findAllByOrderByTimestamp();
   }
 
   public void saveMessage(Message message) {

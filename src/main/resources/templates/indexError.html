@@ -5,12 +5,21 @@
     <meta charset="utf-8"/>
   </head>
   <body>
-    <p><em>The username field is empty!</em></p>
-    <h1>Peer to Peer Chat program</h1>
-    <form action="/updatebutton" th:object="${user}" method="post">
-      Your username:
-      <input type="text" th:field="*{username}" />
-      <input type="submit" value="Update" />
-    </form>
+  <h1>Peer to Peer Chat program</h1>
+  <form action="/updatebutton" th:object="${user}" method="post">
+    Your username:
+    <input type="text" th:field="*{username}" />
+    <input type="submit" value="Update" />
+  </form>
+  <ul>
+    <li th:utext="${'App&lt;br /&gt;Hi there! Submit your message using the send button!'}" />
+  </ul>
+  <ul th:each="message: ${messages}">
+    <li th:utext="${message.username + '&lt;br /&gt;' + message.text}"/>
+  </ul>
+  <form action="/sendbutton" th:object="${newmessage}" method="post">
+    <input type="text" th:field="*{text}" />
+    <input type="submit" value="Send" />
+  </form>
   </body>
 </html>

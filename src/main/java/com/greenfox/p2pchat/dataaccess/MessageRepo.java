@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface MessageRepo extends CrudRepository<Message, Long> {
 
-  List<Message> findAllOrderByTimestamp();
+  List<Message> findAllByOrderByTimestamp();
 
   Message findOneById(long id);
 }

@@ -1,5 +1,6 @@
 package com.greenfox.p2pchat.controller;
 
+import com.greenfox.p2pchat.model.Message;
 import com.greenfox.p2pchat.model.User;
 import com.greenfox.p2pchat.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,10 @@ public class Main {
   @PostMapping(value = "/updatebutton")
   public String updatebutton(User user) {
     return chatService.updatebutton(user);
+  }
+
+  @PostMapping(value = "/sendbutton")
+  public String sendbutton(Message message) {
+    return chatService.saveMessage(message);
   }
 }

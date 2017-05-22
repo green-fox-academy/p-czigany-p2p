@@ -33,6 +33,7 @@ public class ChatService {
     log.setRequestData("");
     System.out.println(log);
 //    }
+    model.addAttribute("newmessage", new Message());
     model.addAttribute("models", repoHandler.allMessages());
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
       model.addAttribute("user", repoHandler.firstUser());
@@ -107,7 +108,7 @@ public class ChatService {
     }
   }
 
-  public void saveMessage(String username, String text) {
+  public String saveMessage(Message message) {
     boolean unique = false;
     Message newMessage = new Message();
     while (!unique) {
@@ -116,9 +117,10 @@ public class ChatService {
         unique = true;
       }
     }
-    newMessage.setText(text);
-    newMessage.setUsername(username);
+    newMessage.setText(message.getText());
+    newMessage.setUsername(repoHandler.firstUser().getUsername());
     repoHandler.saveMessage(newMessage);
+    return "redirect:/";
   }
 
   public void deleteUserById(long id) {
