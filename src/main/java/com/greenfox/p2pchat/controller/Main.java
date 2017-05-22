@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Created by peter on 2017.05.17..
@@ -16,13 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class Main {
 
   @Autowired
-  ChatService chatService;
-
-  @GetMapping(value = "/delete")
-  public String delete(@RequestParam long id) {
-    chatService.deleteUserById(id);
-    return "redirect:/enter";
-  }
+  private ChatService chatService;
 
   @GetMapping(value = "/")
   public String index(Model model) {

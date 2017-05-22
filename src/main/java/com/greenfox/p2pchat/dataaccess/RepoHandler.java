@@ -1,5 +1,6 @@
 package com.greenfox.p2pchat.dataaccess;
 
+import com.greenfox.p2pchat.model.Message;
 import com.greenfox.p2pchat.model.User;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ public class RepoHandler {
   @Autowired
   private UserRepo userRepo;
 
-//  @Autowired
-//  private MessageRepo messageRepo;
+  @Autowired
+  private MessageRepo messageRepo;
 
   public RepoHandler() {
 
   }
+
+  // User functions:
 
   public void saveUser(User user) {
     userRepo.save(user);
@@ -44,5 +47,19 @@ public class RepoHandler {
 
   public void deleteUserById(long id) {
     userRepo.delete(id);
+  }
+
+  // Message functions:
+
+  public List<Message> allMessages() {
+    return messageRepo.findAllOrderByTimestamp();
+  }
+
+  public void saveMessage(Message message) {
+    messageRepo.save(message);
+  }
+
+  public Message messageById(long id) {
+    return messageRepo.findOneById(id);
   }
 }

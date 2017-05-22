@@ -2,6 +2,7 @@ package com.greenfox.p2pchat.service;
 
 import com.greenfox.p2pchat.dataaccess.RepoHandler;
 import com.greenfox.p2pchat.model.Log;
+import com.greenfox.p2pchat.model.Message;
 import com.greenfox.p2pchat.model.User;
 import java.sql.Timestamp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class ChatService {
     log.setRequestData("");
     System.out.println(log);
 //    }
+    model.addAttribute("models", repoHandler.allMessages());
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
       model.addAttribute("user", repoHandler.firstUser());
       return "index";
@@ -103,6 +105,20 @@ public class ChatService {
       repoHandler.updateUsername(repoHandler.firstUser(), user.getUsername());
       return "redirect:/";
     }
+  }
+
+  public void saveMessage(String username, String text) {
+    boolean unique = false;
+    Message newMessage = new Message();
+    while (!unique) {
+      newMessage = new Message();
+      if (repoHandler.messageById(newMessage.getId()) == null) {
+        unique = true;
+      }
+    }
+    newMessage.setText(text);
+    newMessage.setUsername(username);
+    repoHandler.saveMessage(newMessage);
   }
 
   public void deleteUserById(long id) {
