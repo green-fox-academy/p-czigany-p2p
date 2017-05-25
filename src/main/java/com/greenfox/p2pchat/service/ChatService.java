@@ -1,8 +1,5 @@
 package com.greenfox.p2pchat.service;
 
-import static com.greenfox.p2pchat.P2pchatApplication.CHAT_APP_PEER_ADDRESS;
-import static com.greenfox.p2pchat.P2pchatApplication.CHAT_APP_UNIQUE_ID;
-
 import com.greenfox.p2pchat.dataaccess.RepoHandler;
 import com.greenfox.p2pchat.model.Client;
 import com.greenfox.p2pchat.model.Log;
@@ -114,22 +111,23 @@ public class ChatService {
 
   public String sendMessage(Message myMessage, HttpServletRequest request) {
     infoLog(request);
+    myMessage.setUsername(repoHandler.firstUser().getUsername());
     forwardForm(prepareMyMessageToForward(myMessage));
-    saveSentMessage(myMessage);
+    saveMessage(myMessage);
     return "redirect:/";
   }
 
-  public SendingForm prepareMyMessageToForward(Message myMessage) {
-    SendingForm toSend = new SendingForm();
+  private SendingForm prepareMyMessageToForward(Message myMessage) {
     Client me = new Client();
-    me.setId(CHAT_APP_UNIQUE_ID);
+    me.setId(System.getenv("CHAT_APP_UNIQUE_ID"));
+    SendingForm toSend = new SendingForm();
     toSend.setClient(me);
     toSend.setMessage(myMessage);
     return toSend;
   }
 
-  public void forwardForm(SendingForm toSend) {
-    String url = CHAT_APP_PEER_ADDRESS;
+  private void forwardForm(SendingForm toSend) {
+    String url = System.getenv("CHAT_APP_PEER_ADDRESS") + "/api/message/receive";
     RestTemplate restTemplate = new RestTemplate();
     try {
       restTemplate.postForObject(url, toSend, SendingForm.class);
@@ -139,18 +137,11 @@ public class ChatService {
     }
   }
 
-  private void saveSentMessage(Message message) {
-    saveMessage(message, repoHandler.firstUser().getUsername());
-  }
-
-  private void saveReceivedMessage(Message message) {
-    saveMessage(message, message.getUsername());
-  }
-
-  private void saveMessage(Message message, String username) {
+  private void saveMessage(Message message) {
     Message newMessage = findIdForNewMessage();
     newMessage.setText(message.getText());
-    newMessage.setUsername(username);
+    newMessage.setUsername(message.getUsername());
+    newMessage.setTimestamp(message.getTimestamp());
     repoHandler.saveMessage(newMessage);
   }
 
@@ -188,11 +179,17 @@ public class ChatService {
 
     if (complete) {
 
-      if (!receivedForm.getClient().getId().equals(CHAT_APP_UNIQUE_ID)) {
+      if (!receivedForm.getClient().getId().equals(System.getenv("CHAT_APP_UNIQUE_ID"))
+              && repoHandler.messageByTimestampAndUser(receivedForm.getMessage().getTimestamp(),
+              receivedForm.getMessage().getUsername()) == null) {
+
+        saveMessage(receivedForm.getMessage());
+
+        // Add "-Peti-" :
+
+        receivedForm.getMessage().setText(receivedForm.getMessage().getText() + "-Peti-");
 
         forwardForm(receivedForm);
-
-        saveReceivedMessage(receivedForm.getMessage());
       }
 
       return new ResponseEntity<>(new StatusOk(), HttpStatus.OK);

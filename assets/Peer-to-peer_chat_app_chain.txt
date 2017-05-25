@@ -1,0 +1,36 @@
+Perjési Zandraa Attila -> Kovács Milán
+Kovács Milán -> Kérdő Andrea
+Kérdő Andrea -> Zsiga György
+Zsiga György -> Nagy Zsolt
+Nagy Zsolt -> Kállay Levente
+Kállay Levente -> Tekse Balázs
+Tekse Balázs -> Kármán Petra
+Kármán Petra -> Shamsi Ramin
+Shamsi Ramin -> Giday Réka
+Giday Réka -> Podobni András
+Podobni András -> Aradi Nóra
+Aradi Nóra -> Varró Virág
+Varró Virág -> Lengyel Norbert
+Lengyel Norbert -> Matiovics Máté
+Matiovics Máté -> Brandstädter Tamás
+Brandstädter Tamás -> Horváth Patrik
+Horváth Patrik -> Balogh Zsombor
+Balogh Zsombor -> Nagyághy Zita
+Nagyághy Zita -> Hegyi Viktor
+Hegyi Viktor -> Kemény Viktor
+Kemény Viktor -> Pádár Zsuzsanna
+Pádár Zsuzsanna -> Barics Norbert
+Barics Norbert -> Kiszler Gábor
+Kiszler Gábor -> Kecskés Noémi
+Kecskés Noémi -> Nagy Ádám Zoltán
+Nagy Ádám Zoltán -> Nagy Dóri
+Nagy Dóri -> Markovich Zsigmond
+Markovich Zsigmond -> Fekete Imre
+Fekete Imre -> Dombóvári Péter
+Dombóvári Péter -> Stégmár Balázs
+Stégmár Balázs -> Szalay Dániel
+Szalay Dániel -> Mészáros Marcell
+Mészáros Marcell -> Majoros Ádám Kristóf
+Majoros Ádám Kristóf -> Vécsey Bálint
+Vécsey Bálint -> Czigány Péter
+Czigány Péter -> Perjési Zandraa Attila

@@ -2,6 +2,7 @@ package com.greenfox.p2pchat.dataaccess;
 
 import com.greenfox.p2pchat.model.Message;
 import com.greenfox.p2pchat.model.User;
+import java.sql.Timestamp;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,5 +62,9 @@ public class RepoHandler {
 
   public Message messageById(long id) {
     return messageRepo.findOneById(id);
+  }
+
+  public Message messageByTimestampAndUser(Timestamp timestamp, String username) {
+    return messageRepo.findOneByTimestampAndUsername(timestamp, username);
   }
 }
