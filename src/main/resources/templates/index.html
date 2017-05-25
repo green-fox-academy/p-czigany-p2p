@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
   </head>
   <body>
+    <p th:if="${emptyfield}"><em>The username field is empty!</em></p>
     <h1>Peer to Peer Chat program</h1>
     <form action="/updatebutton" th:object="${user}" method="post">
       Your username:

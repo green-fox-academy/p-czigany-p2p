@@ -2,15 +2,11 @@ package com.greenfox.p2pchat.service;
 
 import com.greenfox.p2pchat.dataaccess.RepoHandler;
 import com.greenfox.p2pchat.model.Client;
-import com.greenfox.p2pchat.model.Log;
 import com.greenfox.p2pchat.model.Message;
 import com.greenfox.p2pchat.model.SendingForm;
 import com.greenfox.p2pchat.model.StatusError;
 import com.greenfox.p2pchat.model.StatusOk;
 import com.greenfox.p2pchat.model.User;
-import java.sql.Timestamp;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,36 +21,12 @@ import org.springframework.web.client.RestTemplate;
 public class ChatService {
 
   @Autowired
-  private Log log;
-
-  @Autowired
   private RepoHandler repoHandler;
 
   public ChatService() {
   }
 
-  private void basicLog(HttpServletRequest request) {
-    log.setDateAndTime(new Timestamp(System.currentTimeMillis()));
-    log.setMethod(request.getMethod());
-    log.setPath(request.getServletPath());
-    log.setRequestData(mapToString(request.getParameterMap()));
-    System.out.println(log);
-  }
-
-  private void infoLog(HttpServletRequest request) {
-//    if (System.getenv("CHAT_APP_LOGLEVEL").equals("INFO")) {
-    log.setLogLevel("INFO");
-    basicLog(request);
-//    }
-  }
-
-  private void errorLog(HttpServletRequest request) {
-    log.setLogLevel("ERROR");
-    basicLog(request);
-  }
-
-  public String index(Model model, HttpServletRequest request) {
-    infoLog(request);
+  public String index(Model model) {
     model.addAttribute("newmessage", new Message());
     model.addAttribute("messages", repoHandler.allMessages());
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
@@ -64,18 +36,16 @@ public class ChatService {
     return "redirect:/enter";
   }
 
-  public String enter(Model model, HttpServletRequest request) {
-    infoLog(request);
+  public String enter(Model model) {
     model.addAttribute("user", new User());
     return "enter";
   }
 
-  public String enterbutton(User user, HttpServletRequest request) {
+  public String enterbutton(User user) {
     if (user.getUsername().equals("")) {
-      errorLog(request);
-      return "enterError";
+
+      return "redirect:/enter";
     }
-    infoLog(request);
     if (repoHandler.allUsers().size() == 0) {
       repoHandler.saveUser(user);
       return "redirect:/";
@@ -84,15 +54,12 @@ public class ChatService {
       return "redirect:/";
     }
     return "redirect:/enter";
-
   }
 
-  public String updatebutton(User user, HttpServletRequest request) {
+  public String updatebutton(User user) {
     if (user.getUsername().equals("")) {
-      errorLog(request);
       return "indexError";
     }
-    infoLog(request);
     repoHandler.updateUsername(repoHandler.firstUser(), user.getUsername());
     return "redirect:/";
   }
@@ -109,8 +76,7 @@ public class ChatService {
     return newMessage;
   }
 
-  public String sendMessage(Message myMessage, HttpServletRequest request) {
-    infoLog(request);
+  public String sendMessage(Message myMessage) {
     myMessage.setUsername(repoHandler.firstUser().getUsername());
     forwardForm(prepareMyMessageToForward(myMessage));
     saveMessage(myMessage);
@@ -145,10 +111,7 @@ public class ChatService {
     repoHandler.saveMessage(newMessage);
   }
 
-  public ResponseEntity<?> receiveMessage(SendingForm receivedForm,
-          HttpServletRequest request) {
-    infoLog(request);
-
+  public ResponseEntity<?> receiveMessage(SendingForm receivedForm) {
     String missingValues = "";
     boolean complete = true;
     if (receivedForm.getClient().getId() == null) {
@@ -185,9 +148,8 @@ public class ChatService {
 
         saveMessage(receivedForm.getMessage());
 
-        // Add "-Peti-" :
-
-        receivedForm.getMessage().setText(receivedForm.getMessage().getText() + "-Peti-");
+        receivedForm.getMessage().setText(receivedForm.getMessage().getText()
+                + System.getenv("CHAT_APP_APPENDIX"));
 
         forwardForm(receivedForm);
       }
@@ -196,30 +158,6 @@ public class ChatService {
     }
     return new ResponseEntity<>(new StatusError("Missing field(s): " + missingValues),
             HttpStatus.BAD_REQUEST);
-  }
-
-  private String mapToString(Map<String, String[]> stringPairs) {
-    String textualized = "";
-    int i = 0;
-    for (String key :
-            stringPairs.keySet()) {
-      if (stringPairs.get(key).length > 1) {
-        for (int j = 0; j < stringPairs.get(key).length; j++) {
-          textualized += key + "(" + (j + 1) + ")=" + stringPairs.get(key)[j];
-          if (j < stringPairs.get(key).length - 1) {
-            textualized += ", ";
-          }
-        }
-      }
-      if (stringPairs.get(key).length == 1) {
-        textualized += key + "=" + stringPairs.get(key)[0];
-        if (i < stringPairs.keySet().size() - 1) {
-          textualized += ", ";
-        }
-      }
-      i++;
-    }
-    return textualized;
   }
 
   public void deleteUserById(long id) {

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest(classes = P2pchatApplication.class)
 @WebAppConfiguration
 @EnableWebMvc
-public class RestControlTest {
+public class RestTest {
 
   private MockMvc mockMvc;
 
