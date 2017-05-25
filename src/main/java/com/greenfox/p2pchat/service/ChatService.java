@@ -58,7 +58,7 @@ public class ChatService {
 
   public String updatebutton(User user) {
     if (user.getUsername().equals("")) {
-      return "indexError";
+      return "index";
     }
     repoHandler.updateUsername(repoHandler.firstUser(), user.getUsername());
     return "redirect:/";
@@ -98,7 +98,6 @@ public class ChatService {
     try {
       restTemplate.postForObject(url, toSend, SendingForm.class);
     } catch (Exception e) {
-//      errorLog(request);
       System.out.println("Couldn't send message!");
     }
   }
