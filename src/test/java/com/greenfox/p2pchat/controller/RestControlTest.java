@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.greenfox.p2pchat.P2pchatApplication;
 import com.greenfox.p2pchat.model.Client;
 import com.greenfox.p2pchat.model.Message;
-import com.greenfox.p2pchat.model.ReceivedMessage;
-import java.sql.Timestamp;
+import com.greenfox.p2pchat.model.SendingForm;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +50,7 @@ public class RestControlTest {
     myMessage.setUsername("user");
     myMessage.setText("Dear Everybody! ...");
 
-    ReceivedMessage validMessage = new ReceivedMessage();
+    SendingForm validMessage = new SendingForm();
     validMessage.setClient(myClient);
     validMessage.setMessage(myMessage);
 
@@ -75,7 +74,7 @@ public class RestControlTest {
     Message myMessage = new Message();
     myMessage.setUsername("user");
 //    myMessage.setText("Dear Everybody! ...");
-    ReceivedMessage validMessage = new ReceivedMessage();
+    SendingForm validMessage = new SendingForm();
     validMessage.setClient(myClient);
     validMessage.setMessage(myMessage);
 

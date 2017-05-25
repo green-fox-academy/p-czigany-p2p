@@ -3,12 +3,12 @@ package com.greenfox.p2pchat.model;
 /**
  * Created by peter on 2017.05.22..
  */
-public class ReceivedMessage {
+public class SendingForm {
 
   private Message message;
   private Client client;
 
-  public ReceivedMessage() {
+  public SendingForm() {
   }
 
   public Message getMessage() {

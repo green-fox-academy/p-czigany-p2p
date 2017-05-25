@@ -1,18 +1,17 @@
 package com.greenfox.p2pchat.service;
 
+import static com.greenfox.p2pchat.P2pchatApplication.CHAT_APP_PEER_ADDRESS;
 import static com.greenfox.p2pchat.P2pchatApplication.CHAT_APP_UNIQUE_ID;
 
 import com.greenfox.p2pchat.dataaccess.RepoHandler;
 import com.greenfox.p2pchat.model.Client;
 import com.greenfox.p2pchat.model.Log;
 import com.greenfox.p2pchat.model.Message;
-import com.greenfox.p2pchat.model.ReceivedMessage;
+import com.greenfox.p2pchat.model.SendingForm;
 import com.greenfox.p2pchat.model.StatusError;
 import com.greenfox.p2pchat.model.StatusOk;
 import com.greenfox.p2pchat.model.User;
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -66,9 +63,8 @@ public class ChatService {
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
       model.addAttribute("user", repoHandler.firstUser());
       return "index";
-    } else {
-      return "redirect:/enter";
     }
+    return "redirect:/enter";
   }
 
   public String enter(Model model, HttpServletRequest request) {
@@ -86,13 +82,13 @@ public class ChatService {
     if (repoHandler.allUsers().size() == 0) {
       repoHandler.saveUser(user);
       return "redirect:/";
-    } else if (repoHandler.userByName(user.getUsername()) != null) {
-      return "redirect:/";
-    } else {
-      return "redirect:/enter";
     }
-  }
+    if (repoHandler.userByName(user.getUsername()) != null) {
+      return "redirect:/";
+    }
+    return "redirect:/enter";
 
+  }
 
   public String updatebutton(User user, HttpServletRequest request) {
     if (user.getUsername().equals("")) {
@@ -116,56 +112,89 @@ public class ChatService {
     return newMessage;
   }
 
-  public String sendMessage(Message message, HttpServletRequest request) {
+  public String sendMessage(Message myMessage, HttpServletRequest request) {
     infoLog(request);
-    Message newMessage = findIdForNewMessage();
-    newMessage.setText(message.getText());
-    newMessage.setUsername(repoHandler.firstUser().getUsername());
-    repoHandler.saveMessage(newMessage);
-
-    ReceivedMessage toSend = new ReceivedMessage();
-    Client me = new Client();
-    me.setId(CHAT_APP_UNIQUE_ID);
-    toSend.setClient(me);
-    toSend.setMessage(newMessage);
-
-    String url = "https://peertopeerchatapp.herokuapp.com/api/message/receive";
-    RestTemplate restTemplate = new RestTemplate();
-    restTemplate.postForObject(url, toSend, ReceivedMessage.class);
-
+    forwardForm(prepareMyMessageToForward(myMessage));
+    saveSentMessage(myMessage);
     return "redirect:/";
   }
 
+  public SendingForm prepareMyMessageToForward(Message myMessage) {
+    SendingForm toSend = new SendingForm();
+    Client me = new Client();
+    me.setId(CHAT_APP_UNIQUE_ID);
+    toSend.setClient(me);
+    toSend.setMessage(myMessage);
+    return toSend;
+  }
+
+  public void forwardForm(SendingForm toSend) {
+    String url = CHAT_APP_PEER_ADDRESS;
+    RestTemplate restTemplate = new RestTemplate();
+    try {
+      restTemplate.postForObject(url, toSend, SendingForm.class);
+    } catch (Exception e) {
+//      errorLog(request);
+      System.out.println("Couldn't send message!");
+    }
+  }
+
+  private void saveSentMessage(Message message) {
+    saveMessage(message, repoHandler.firstUser().getUsername());
+  }
+
   private void saveReceivedMessage(Message message) {
+    saveMessage(message, message.getUsername());
+  }
+
+  private void saveMessage(Message message, String username) {
     Message newMessage = findIdForNewMessage();
     newMessage.setText(message.getText());
-    newMessage.setUsername(message.getUsername());
+    newMessage.setUsername(username);
     repoHandler.saveMessage(newMessage);
   }
 
-  public ResponseEntity<?> receiveMessage(ReceivedMessage receivedMessage,
+  public ResponseEntity<?> receiveMessage(SendingForm receivedForm,
           HttpServletRequest request) {
     infoLog(request);
+
     String missingValues = "";
     boolean complete = true;
-    if (receivedMessage.getClient().getId() == null) {
-      missingValues += "client.id ";
+    if (receivedForm.getClient().getId() == null) {
+      missingValues += "client.id";
       complete = false;
     }
-    if (receivedMessage.getMessage().getText() == null) {
-      missingValues += "message.text ";
+    if (receivedForm.getMessage().getText() == null) {
+      if (!complete) {
+        missingValues += ", ";
+      }
+      missingValues += "message.text";
       complete = false;
     }
-    if (receivedMessage.getMessage().getTimestamp() == null) {
-      missingValues += "message.timestamp ";
+    if (receivedForm.getMessage().getTimestamp() == null) {
+      if (!complete) {
+        missingValues += ", ";
+      }
+      missingValues += "message.timestamp";
       complete = false;
     }
-    if (receivedMessage.getMessage().getUsername() == null) {
-      missingValues += "message.username ";
+    if (receivedForm.getMessage().getUsername() == null) {
+      if (!complete) {
+        missingValues += ", ";
+      }
+      missingValues += "message.username";
       complete = false;
     }
+
     if (complete) {
-      saveReceivedMessage(receivedMessage.getMessage());
+
+      if (!receivedForm.getClient().getId().equals(CHAT_APP_UNIQUE_ID)) {
+
+        forwardForm(receivedForm);
+
+        saveReceivedMessage(receivedForm.getMessage());
+      }
+
       return new ResponseEntity<>(new StatusOk(), HttpStatus.OK);
     }
     return new ResponseEntity<>(new StatusError("Missing field(s): " + missingValues),
@@ -174,9 +203,24 @@ public class ChatService {
 
   private String mapToString(Map<String, String[]> stringPairs) {
     String textualized = "";
+    int i = 0;
     for (String key :
             stringPairs.keySet()) {
-      textualized += key + "=" + stringPairs.get(key).toString() + " ";
+      if (stringPairs.get(key).length > 1) {
+        for (int j = 0; j < stringPairs.get(key).length; j++) {
+          textualized += key + "(" + (j + 1) + ")=" + stringPairs.get(key)[j];
+          if (j < stringPairs.get(key).length - 1) {
+            textualized += ", ";
+          }
+        }
+      }
+      if (stringPairs.get(key).length == 1) {
+        textualized += key + "=" + stringPairs.get(key)[0];
+        if (i < stringPairs.keySet().size() - 1) {
+          textualized += ", ";
+        }
+      }
+      i++;
     }
     return textualized;
   }

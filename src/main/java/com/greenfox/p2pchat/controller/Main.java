@@ -1,7 +1,6 @@
 package com.greenfox.p2pchat.controller;
 
 import com.greenfox.p2pchat.model.Message;
-import com.greenfox.p2pchat.model.ReceivedMessage;
 import com.greenfox.p2pchat.model.User;
 import com.greenfox.p2pchat.service.ChatService;
 import javax.servlet.http.HttpServletRequest;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by peter on 2017.05.17..
