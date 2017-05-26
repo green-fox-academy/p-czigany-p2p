@@ -14,5 +14,5 @@ public interface MessageRepo extends CrudRepository<Message, Long> {
 
   Message findOneById(long id);
 
-  Message findOneByTimestampAndUsername(Timestamp timestamp, String username);
+  List<Message> findAllByTimestampAndUsername(Timestamp timestamp, String username);
 }

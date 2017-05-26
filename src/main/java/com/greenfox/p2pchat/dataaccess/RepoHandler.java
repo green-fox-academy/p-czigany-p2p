@@ -64,7 +64,7 @@ public class RepoHandler {
     return messageRepo.findOneById(id);
   }
 
-  public Message messageByTimestampAndUser(Timestamp timestamp, String username) {
-    return messageRepo.findOneByTimestampAndUsername(timestamp, username);
+  public List<Message> messagesByTimestampAndUser(Timestamp timestamp, String username) {
+    return messageRepo.findAllByTimestampAndUsername(timestamp, username);
   }
 }

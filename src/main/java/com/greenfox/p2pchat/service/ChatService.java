@@ -26,7 +26,8 @@ public class ChatService {
   public ChatService() {
   }
 
-  public String index(Model model) {
+  public String index(Model model, Boolean emptyfield) {
+    model.addAttribute("emptyfield", emptyfield);
     model.addAttribute("newmessage", new Message());
     model.addAttribute("messages", repoHandler.allMessages());
     if ((repoHandler.allUsers() != null) && (repoHandler.allUsers().size() > 0)) {
@@ -36,7 +37,8 @@ public class ChatService {
     return "redirect:/enter";
   }
 
-  public String enter(Model model) {
+  public String enter(Model model, Boolean emptyfield) {
+    model.addAttribute("emptyfield", emptyfield);
     model.addAttribute("user", new User());
     return "enter";
   }
@@ -142,8 +144,8 @@ public class ChatService {
     if (complete) {
 
       if (!receivedForm.getClient().getId().equals(System.getenv("CHAT_APP_UNIQUE_ID"))
-              && repoHandler.messageByTimestampAndUser(receivedForm.getMessage().getTimestamp(),
-              receivedForm.getMessage().getUsername()) == null) {
+              && repoHandler.messagesByTimestampAndUser(receivedForm.getMessage().getTimestamp(),
+              receivedForm.getMessage().getUsername()).size() == 0) {
 
         saveMessage(receivedForm.getMessage());
 
