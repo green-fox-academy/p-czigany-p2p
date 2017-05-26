@@ -26,7 +26,7 @@ public class Rest {
   @CrossOrigin("*")
   @PostMapping(value = "/api/message/receive")
   public ResponseEntity<?> receiveMessage(@RequestBody SendingForm sendingForm, HttpServletRequest request) {
-    logger.infoLog(request);
+//    logger.infoLog(request);
     return chatService.receiveMessage(sendingForm);
   }
 }

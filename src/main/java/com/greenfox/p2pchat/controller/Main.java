@@ -27,14 +27,13 @@ public class Main {
   @GetMapping(value = "/")
   public String index(@RequestParam(value = "emptyfield", required = false) boolean emptyfield, Model model, HttpServletRequest request) {
     logger.infoLog(request);
-    model.addAttribute("emptyfield", emptyfield);
-    return chatService.index(model);
+    return chatService.index(model, emptyfield);
   }
 
   @GetMapping(value = "/enter")
-  public String enter(Model model, HttpServletRequest request) {
+  public String enter(@RequestParam(value = "emptyfield", required = false) boolean emptyfield, Model model, HttpServletRequest request) {
     logger.infoLog(request);
-    return chatService.enter(model);
+    return chatService.enter(model, emptyfield);
   }
 
   @PostMapping(value = "/enterbutton")
