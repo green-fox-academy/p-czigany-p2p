@@ -8,6 +8,7 @@ import com.greenfox.p2pchat.model.SendingForm;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -41,48 +42,46 @@ public class RestTest {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
   }
 
-  @Test
-  public void receiveMessageSuccessfully() throws Exception {
-    Client myClient = new Client();
-    myClient.setId("sender");
-
-    Message myMessage = new Message();
-    myMessage.setUsername("user");
-    myMessage.setText("Dear Everybody! ...");
-
-    SendingForm validMessage = new SendingForm();
-    validMessage.setClient(myClient);
-    validMessage.setMessage(myMessage);
-
-    Gson gson = new Gson();
-    String json = gson.toJson(validMessage);
-
-    System.out.println(json);
-
-    mockMvc.perform(post("/api/message/receive")
-            .contentType(MediaType.APPLICATION_JSON_UTF8).content(json))
+  private void performPost(MockMvc mockMvc, String url, String sentJson, String expectJson) throws Exception {
+    mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON_UTF8).content(sentJson))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(jsonPath("$.status", is("ok")));
+            .andExpect(content().json(expectJson));
   }
 
   @Test
-  public void receceiveMessageWithMissingText() throws Exception {
-    Client myClient = new Client();
-    myClient.setId("sender");
-
-    Message myMessage = new Message();
-    myMessage.setUsername("user");
-//    myMessage.setText("Dear Everybody! ...");
-    SendingForm validMessage = new SendingForm();
-    validMessage.setClient(myClient);
-    validMessage.setMessage(myMessage);
-
-    Gson gson = new Gson();
-    String json = gson.toJson(validMessage);
-
+  public void answerMessageSuccessfully() throws Exception {
     mockMvc.perform(post("/api/message/receive")
-            .contentType(MediaType.APPLICATION_JSON_UTF8).content(json))
+            .contentType(MediaType.APPLICATION_JSON_UTF8).content("{"
+                    + "  \"message\": {"
+                    + "    \"id\": 7655482,"
+                    + "    \"username\": \"EggDice\","
+                    + "    \"text\": \"How you doin'?\","
+                    + "    \"timestamp\": 1322018752992"
+                    + "  },"
+                    + "  \"client\": {"
+                    + "    \"id\": \"EggDice\""
+                    + "  }"
+                    + "}"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{\"status\": \"ok\"}"));
+  }
+
+  @Test
+  public void answerMessageWithMissingText() throws Exception {
+    mockMvc.perform(post("/api/message/receive")
+            .contentType(MediaType.APPLICATION_JSON_UTF8).content("{"
+                    + "  \"message\": {"
+                    + "    \"id\": 7655482,"
+                    + "    \"username\": \"EggDice\","
+//                    + "    \"text\": \"How you doin'?\","
+                    + "    \"timestamp\": 1322018752992"
+                    + "  },"
+                    + "  \"client\": {"
+                    + "    \"id\": \"EggDice\""
+                    + "  }"
+                    + "}"))
             .andExpect(status().isBadRequest())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$.status", is("error")))
